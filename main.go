@@ -4,11 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/pflag"
 	"github.com/tikarammardi/portscanner/app"
-)
-
-const (
-	StartPort = 1
-	EndPort   = 65535
+	. "github.com/tikarammardi/portscanner/utils"
 )
 
 func main() {

@@ -1,44 +1,32 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/spf13/pflag"
 	"github.com/tikarammardi/portscanner/app"
-	"os"
-	"strings"
+)
+
+const (
+	StartPort = 1
+	EndPort   = 65535
 )
 
 func main() {
-	var host string
+	var (
+		host      string
+		startPort int
+		endPort   int
+	)
+
 	pflag.StringVar(&host, "host", "", "Specify the host to scan for open ports.")
-	fmt.Println("Before parsing", host)
+	pflag.IntVar(&startPort, "start", StartPort, "Specify the start port for scanning.")
+	pflag.IntVar(&endPort, "end", EndPort, "Specify the end port for scanning.")
 	pflag.Parse()
 
-	fmt.Println("After parsing", host)
+	host = app.GetHost(host)
+	startPort, endPort = app.GetPorts(startPort, endPort)
 
-	if host == "" {
-		fmt.Println("Please specify a host to scan.")
-		scanner := bufio.NewScanner(os.Stdin)
-		if scanner.Scan() {
-			host = strings.TrimSpace(scanner.Text())
-		}
+	fmt.Printf("Scanning ports on %s from %d to %d\n", host, startPort, endPort)
 
-		if err := scanner.Err(); err != nil {
-			fmt.Println("Error reading from input:", err)
-			os.Exit(1)
-		}
-
-		if host == "" {
-			fmt.Println("No host specified.")
-			os.Exit(1)
-		}
-	}
-
-	startPort := 1
-	endPort := 65535
-
-	fmt.Println("Scanning ports on", host, "from", startPort, "to", endPort)
 	app.ScanPorts(host, startPort, endPort)
-
 }

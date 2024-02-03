@@ -20,7 +20,9 @@ func main() {
 	pflag.Parse()
 
 	host = app.GetHost(host)
-	startPort, endPort = app.GetPorts(startPort, endPort)
+	if !pflag.Lookup("start").Changed && !pflag.Lookup("end").Changed {
+		startPort, endPort = app.GetPorts(StartPort, EndPort)
+	}
 
 	fmt.Printf("Scanning ports on %s from %d to %d\n", host, startPort, endPort)
 

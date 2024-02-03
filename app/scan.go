@@ -13,7 +13,6 @@ func ScanPorts(host string, startPort, endPort int) {
 	for port := startPort; port <= endPort; port++ {
 		if scanPort(host, port) {
 			fmt.Printf("%sPort Number %d is open\n", RedColor, port)
-			// TODO: Add service detection to identify the service running on the port
 		} else {
 			fmt.Printf("%sPort Number %d is closed\n", GreenColor, port)
 		}
@@ -22,7 +21,7 @@ func ScanPorts(host string, startPort, endPort int) {
 
 func scanPort(host string, port int) bool {
 	address := fmt.Sprintf("%s:%d", host, port)
-	showSpinner()
+	showSpinner(host)
 	conn, err := net.DialTimeout("tcp", address, 1*time.Second)
 	if err != nil {
 		return false
@@ -34,9 +33,9 @@ func scanPort(host string, port int) bool {
 	return true
 }
 
-func showSpinner() {
+func showSpinner(host string) {
 	s := spinner.New(spinner.CharSets[11], 100*time.Millisecond)
-	s.Suffix = " Scanning ports..."
+	s.Suffix = fmt.Sprintf(" Scanning port on %s", host)
 	s.Color("red")
 	s.Start()
 	time.Sleep(time.Second)
